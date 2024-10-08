@@ -5,13 +5,23 @@ use crate::vec3::{Point3, Vec3};
 use std::fs::File;
 use std::io::Result;
 use std::io::Write;
-use crate::sphere::hit_sphere;
+use crate::sphere::Sphere;
+use crate::hittable::{HitRecord, Hittable};
+use crate::hittable_list::HittableList;
+use crate::common;
+
 
 pub const ASPECT_RATIO: f64 = 16.0 / 9.0;
 pub const IMAGE_WIDTH: i32 = 800;
 pub const IMAGE_HEIGHT: i32 = (IMAGE_WIDTH as f64 / ASPECT_RATIO) as i32;
 
+
 pub fn draw_img() -> Result<()> {
+    
+    let mut world = HittableList::new();
+    world.add(Box::new(Sphere::new(Point3::new(0.0, 0.0, -1.0), 0.5)));
+    world.add(Box::new(Sphere::new(Point3::new(0.0, -100.5, -1.0), 100.0)));
+
     // Camera
     let viewport_height: f64 = 2.0;
     let viewport_width: f64 = ASPECT_RATIO * viewport_height; 
@@ -38,7 +48,7 @@ pub fn draw_img() -> Result<()> {
                 origin,
                 lower_left_corner + u * horizontal + v * vertical - origin,
             );
-            let pixel_color = ray_color(&r); // Calcule la couleur du pixel
+            let pixel_color = ray_color(&r, &world);// Calcule la couleur du pixel
             color::write_color(&mut file1, pixel_color); // Écrit la couleur dans le fichier
         }
     }
@@ -46,12 +56,10 @@ pub fn draw_img() -> Result<()> {
     Ok(())
 }
 
-pub fn ray_color(r: &Ray) -> Color {
-    // Vérifie si le rayon touche la sphère
-    let t = hit_sphere(Point3::new(0.0, 0.0, -1.0), 0.5, r);
-    if t > 0.0 {
-        let n = Vec3::unit_vector(r.at(t) - Vec3::new(0.0, 0.0, -1.0)); // Assurez-vous que r.at(t) renvoie bien un Point3
-        return 0.5 * Color::new(n.x() + 1.0, n.y() + 1.0, n.z() + 1.0); // Couleur basée sur la normale
+fn ray_color(r: &Ray, world: &dyn Hittable) -> Color {
+    let mut rec = HitRecord::new();
+    if world.hit(r, 0.0, common::INFINITY, &mut rec) {
+        return 0.5 * (rec.normal + Color::new(1.0, 1.0, 1.0));
     }
 
     // Couleur de l'arrière-plan (dégradé)

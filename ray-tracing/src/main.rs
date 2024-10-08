@@ -3,6 +3,9 @@ mod color;
 mod ray;
 mod sphere;
 mod vec3;
+mod hittable;
+mod hittable_list;
+mod common;
 
 use tuto_draw::{draw_img, IMAGE_WIDTH, IMAGE_HEIGHT}; // Import the constants
 
