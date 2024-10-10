@@ -3,9 +3,7 @@ use crate::color::Color;
 use crate::ray::Ray;
 use crate::vec3::{Point3, Vec3};
 use std::fs::File;
-use std::io::Result;
-use std::io::Write;
-use std::io;
+use std::io::{Result, Write};
 use crate::sphere::Sphere;
 use crate::hittable::{HitRecord, Hittable};
 use crate::hittable_list::HittableList;
@@ -15,10 +13,10 @@ use crate::camera::Camera;
 
 
 pub const ASPECT_RATIO: f64 = 16.0 / 9.0;
-pub const IMAGE_WIDTH: i32 = 800;
+pub const IMAGE_WIDTH: i32 = 600;
 pub const IMAGE_HEIGHT: i32 = (IMAGE_WIDTH as f64 / ASPECT_RATIO) as i32;
 pub const SAMPLES_PER_PIXEL: i32 = 100;
-
+pub const MAX_DEPTH: i32 = 50;
 
 pub fn draw_img() -> Result<()> {
     
@@ -26,7 +24,7 @@ pub fn draw_img() -> Result<()> {
     let mut world = HittableList::new();
     world.add(Box::new(Sphere::new(Point3::new(0.0, 0.0, -1.0), 0.5)));
     world.add(Box::new(Sphere::new(Point3::new(0.0, -100.5, -1.0), 100.0)));
-    world.add(Box::new(Sphere::new(Point3::new(0.7, 0.2, -2.0), 0.5)));
+    world.add(Box::new(Sphere::new(Point3::new(1.5, 0.2, -2.0), 0.5)));
     
     // Camera
     let cam = Camera::new();
@@ -46,7 +44,7 @@ pub fn draw_img() -> Result<()> {
                 let u = (i as f64 + common::random_double()) / (IMAGE_WIDTH - 1) as f64;
                 let v = (j as f64 + common::random_double()) / (IMAGE_HEIGHT - 1) as f64;
                 let r = cam.get_ray(u, v);
-                pixel_color = pixel_color + ray_color(&r, &world);
+                pixel_color = pixel_color + ray_color(&r, &world, MAX_DEPTH);
             }
             color::write_color(&mut file1, pixel_color, SAMPLES_PER_PIXEL);
         }
@@ -55,12 +53,16 @@ pub fn draw_img() -> Result<()> {
     Ok(())
 }
 
-fn ray_color(r: &Ray, world: &dyn Hittable) -> Color {
-    
+fn ray_color(r: &Ray, world: &dyn Hittable, depth: i32) -> Color {
+    // If we've exceeded the ray bounce limit, no more light is gathered
+    if depth <= 0 {
+        return Color::new(0.0, 0.0, 0.0);
+    }
     // Ray intersection 
     let mut rec = HitRecord::new();
-    if world.hit(r, 0.0, common::INFINITY, &mut rec) {
-        return 0.5 * (rec.normal + Color::new(1.0, 1.0, 1.0));
+    if world.hit(r, 0.001, common::INFINITY, &mut rec) {
+        let direction = rec.normal + Vec3::random_unit_vector();
+        return 0.5 * ray_color(&Ray::new(rec.p, direction), world, depth - 1);
     }
 
     // Couleur de l'arrière-plan (dégradé)

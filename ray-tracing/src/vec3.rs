@@ -1,6 +1,6 @@
 use std::fmt::{write, Display, Formatter, Result};
 use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub};
-
+use crate::common;
 
 #[derive(Copy, Clone, Default)]
 pub struct Vec3 {
@@ -10,6 +10,22 @@ pub struct Vec3 {
 impl Vec3 {
     pub fn new(x:f64, y:f64, z: f64) -> Vec3 {
         Vec3 {  axe: [x, y, z] }
+    }
+
+    pub fn random() -> Vec3 {
+        Vec3::new(
+            common::random_double(),
+            common::random_double(),
+            common::random_double(),
+        )
+    }
+ 
+    pub fn random_range(min: f64, max: f64) -> Vec3 {
+        Vec3::new(
+            common::random_double_range(min, max),
+            common::random_double_range(min, max),
+            common::random_double_range(min, max),
+        )
     }
 
     pub fn x(&self) -> f64 {
@@ -37,6 +53,20 @@ impl Vec3 {
     pub fn unit_vector(v: Vec3) -> Vec3 {
         v / v.vec_length()
         // divise chaque composante du vecteur par lui même pour le normaliser à ~1
+    }
+
+    pub fn random_in_unit_sphere() -> Vec3 {
+        loop {
+            let p = Vec3::random_range(-1.0, 1.0);
+            if p.length_squared() >= 1.0 {
+                continue;
+            }
+            return p;
+        }
+    }
+
+    pub fn random_unit_vector() -> Vec3 {
+        Self::unit_vector(Self::random_in_unit_sphere())
     }
 
     pub fn dot(u: Vec3, v: Vec3) -> f64 {

@@ -22,7 +22,7 @@ impl Camera {
         let vertical = Vec3::new(0.0, viewport_height, 0.0);
         let lower_left_corner =
             origin - horizontal / 2.0 - vertical / 2.0 - Vec3::new(0.0, 0.0, focal_length);
- 
+
         Camera {
             origin,
             lower_left_corner,
