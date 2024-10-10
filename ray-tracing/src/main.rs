@@ -6,6 +6,7 @@ mod vec3;
 mod hittable;
 mod hittable_list;
 mod common;
+mod camera;
 
 use tuto_draw::{draw_img, IMAGE_WIDTH, IMAGE_HEIGHT}; // Import the constants
 
@@ -13,6 +14,7 @@ fn main() {
     println!("Image dimensions: {}x{}", IMAGE_WIDTH, IMAGE_HEIGHT); // Example usage
     let _ = draw_img(); // Call the draw_img function
 }
+
 
 
 /*
