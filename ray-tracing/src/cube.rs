@@ -7,7 +7,7 @@ use crate::material::Material;
 pub struct Cube {
     min: Point3,  // Coin inférieur du cube (point minimum)
     max: Point3,  // Coin supérieur du cube (point maximum)
-    mat: Rc<dyn Material>,  // Matériau du cube
+    mat: Rc<dyn Material>,
 }
 
 impl Cube {

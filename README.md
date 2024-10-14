@@ -10,4 +10,7 @@ Ce projet implémente un moteur de ray tracing en Rust, permettant de générer 
 * Limite de rebond : Contrôle de la profondeur maximale de récursion des rayons pour limiter les calculs.
 
 ### Constantes principales
-    Les constantes comme la résolution de l'image, le nombre d'échantillons par pixel, et le ratio d'aspect sont configurables dans un fichier séparé (constants.rs).
+Les constantes comme la résolution de l'image, le nombre d'échantillons par pixel, et le ratio d'aspect sont configurables dans un fichier séparé (constants.rs).
+
+# Audit
+Retrouvez les 4 images necessaire à l'audit dans 

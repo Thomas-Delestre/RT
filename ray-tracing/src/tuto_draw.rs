@@ -20,63 +20,70 @@ use crate::vec3::{Point3, Vec3};
 pub fn draw_img() -> Result<()> {
     println!("Image dimensions: {}x{}", IMAGE_WIDTH, IMAGE_HEIGHT);
 
+    // File
+    let filename = "full_obj_pov1.ppm";
+    let mut file = File::create(filename)?;
+    writeln!(file, "P3\n{} {}\n255", IMAGE_WIDTH, IMAGE_HEIGHT)?;
+
     //World
     let _r = f64::cos(common::PI / 4.0);
     let mut world = HittableList::new();
 
-    // let material_ground = Rc::new(Lambertian::new(Color::new(0.8, 0.8, 0.0)));
-    // world.add(Box::new(Sphere::new(Point3::new(0.0, -100.5, -1.0),100.0,material_ground,)));
-
+    /*
+        Placer le monde sur une sphere géante:
+        let material_ground = Rc::new(Lambertian::new(Color::new(0.8, 0.8, 0.0)));
+        world.add(Box::new(Sphere::new(Point3::new(0.0, -100.5, -1.0),100.0,material_ground,)));
+    */
     // plane ground
-    let material_ground = Rc::new(Lambertian::new(Color::new(0.9, 0.9, 0.9)));
+    let material_ground = Rc::new(Lambertian::new(Color::new(0.9, 0.7, 0.8)));
     world.add(Box::new(Plane::new(
         Point3::new(0.0, 0.0, -1.0), // Un point sur le plan (y = -0.5)
         Vec3::new(0.0, 5.0, 0.0),    // Normale vers le haut (en direction de l'axe Y)
         material_ground,
     )));
-    //sphere centered
+
+    // sphere centered
     let material_center = Rc::new(Lambertian::new(Color::new(0.1, 0.2, 0.5)));
     world.add(Box::new(Sphere::new(
         Point3::new(0.0, 0.5, -1.0),
         0.5,
         material_center,
     )));
+
     // sphere righted
     let material_right = Rc::new(Metal::new(Color::new(0.8, 0.6, 0.2), 0.0));
     world.add(Box::new(Sphere::new(
-        Point3::new(1.0, 0.2, -1.0),
-        0.2,
+        Point3::new(2.0, 0.7, -1.0),
+        0.7,
         material_right,
     )));
+
+    
     //cube fronted
-    let material_cube = Rc::new(Metal::new(Color::new(0.8, 0.3, 0.3), 0.0));
+    let material_cube = Rc::new(Metal::new(Color::new(0.2, 0.1, 0.1), 0.2));
     world.add(Box::new(Cube::new(
         Point3::new(0.0, 0.0, 0.0), // Coin inférieur
-        Point3::new(0.5, 0.5, 0.5), // Coin supérieur
+        Point3::new(0.7, 0.7, 0.7), // Coin supérieur
         material_cube,
     )));
+
     //cylinder on left
-    let material_cylinder = Rc::new(Metal::new(Color::new(0.5, 0.7, 0.3), 0.7));
+    let material_cylinder = Rc::new(Lambertian::new(Color::new(0.8, 0.7, 0.8)));
     world.add(Box::new(Cylinder::new(
-        Point3::new(-2.0, 0.0, -1.0), // Base center of the cylinder
-        1.0,                          // Height of the cylinder
-        0.5,                          // Radius of the cylinder
+        Point3::new(-2.0, 0.0, -1.0), // Position du centre de la base du cylindre
+        1.0,                          
+        0.5,                     
         material_cylinder,
     )));
-
+ 
     // Camera
     let cam = Camera::new(
-        Point3::new(0.7, 1.5, 1.5),
-        Point3::new(0.0, 0.0, -1.0),
+        Point3::new(0.5, 1.0, 2.0),
+        Point3::new(0.0, 0.0, 0.0),
         Vec3::new(0.0, 1.0, 0.0),
         80.0,
         ASPECT_RATIO,
     );
-    // File
-    let filename1 = "tuto_pict.ppm";
-    let mut file1 = File::create(filename1)?;
-
-    writeln!(file1, "P3\n{} {}\n255", IMAGE_WIDTH, IMAGE_HEIGHT)?;
 
     //Render
     for j in (0..IMAGE_HEIGHT).rev() {
@@ -89,7 +96,7 @@ pub fn draw_img() -> Result<()> {
                 let r = cam.get_ray(u, v);
                 pixel_color = pixel_color + ray_color(&r, &world, MAX_DEPTH);
             }
-            color::write_color(&mut file1, pixel_color, SAMPLES_PER_PIXEL);
+            color::write_color(&mut file, pixel_color, SAMPLES_PER_PIXEL);
         }
     }
     eprint!("\nDone.\n");
@@ -97,31 +104,32 @@ pub fn draw_img() -> Result<()> {
 }
 
 fn ray_color(r: &Ray, world: &dyn Hittable, depth: i32) -> Color {
-    // If we've exceeded the ray bounce limit, no more light is gathered
+    // Si nous avons dépassé la profondeur maximale de rebonds, retour à la couleur noire
     if depth <= 0 {
         return Color::new(0.0, 0.0, 0.0);
     }
-    // Ray intersection
+
+    // Intersection du rayon
     let mut rec = HitRecord::new();
     if world.hit(r, 0.001, common::INFINITY, &mut rec) {
         let mut attenuation = Color::default();
         let mut scattered = Ray::default();
-        if rec
-            .mat
-            .as_ref()
-            .unwrap()
-            .scatter(r, &rec, &mut attenuation, &mut scattered)
-        {
+        if rec.mat.as_ref().unwrap().scatter(r, &rec, &mut attenuation, &mut scattered) {
             return attenuation * ray_color(&scattered, world, depth - 1);
         }
         return Color::new(0.0, 0.0, 0.0);
     }
+
     // Couleur de l'arrière-plan (dégradé)
     let unit_direction = Vec3::unit_vector(r.direction());
-    let t = 0.5 * (unit_direction.y() + 1.0);
-    return (1.0 - t) * Color::new(1.0, 1.0, 1.0) + t * Color::new(0.5, 0.7, 1.0);
-    // Dégradé du ciel
+    let t = 2.0 * (unit_direction.y() + 1.0);
+    
+    // Dégradé du ciel assombri
+    return (1.0 - t) * Color::new(0.8, 0.8, 0.8) + t * Color::new(0.2, 0.4, 0.6);
 }
+
+
+
 
 /*
 horizontal = Vec3::new(viewport_width, 0.0, 0.0) → soit Vec3(3.555, 0.0, 0.0).
