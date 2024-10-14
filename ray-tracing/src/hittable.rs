@@ -1,3 +1,6 @@
+use std::rc::Rc;
+ 
+use crate::material::Material;
 use crate::ray::Ray;
 use crate::vec3::{Point3, Vec3};
  
@@ -5,6 +8,7 @@ use crate::vec3::{Point3, Vec3};
 pub struct HitRecord {
     pub p: Point3, // les point d'untersections
     pub normal: Vec3, // vecteur pointant vers l'extérieur de la surface qu'elle rencontre (direction)
+    pub mat: Option<Rc<dyn Material>>, 
     pub t: f64, // distance entre intersection et la cam
     pub front_face: bool,
 }

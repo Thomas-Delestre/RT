@@ -7,15 +7,17 @@ mod hittable;
 mod hittable_list;
 mod common;
 mod camera;
+mod material;
+mod plane;
+mod cube;
+mod cylinder;
+mod constants;
 
-use tuto_draw::{draw_img, IMAGE_WIDTH, IMAGE_HEIGHT}; // Import the constants
+use tuto_draw::draw_img; // Import the constants
 
 fn main() {
-    println!("Image dimensions: {}x{}", IMAGE_WIDTH, IMAGE_HEIGHT); // Example usage
     let _ = draw_img(); // Call the draw_img function
 }
-
-
 
 /*
 Allons y étape par étape. EN parlant concrètement, avec le minimum de formule possible et un maximum d'exemple concret: 

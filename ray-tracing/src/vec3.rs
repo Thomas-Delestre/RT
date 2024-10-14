@@ -1,5 +1,5 @@
-use std::fmt::{write, Display, Formatter, Result};
-use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub};
+use std::fmt::{Display, Formatter, Result};
+use std::ops::{Add, Div, Mul, Neg, Sub};
 use crate::common;
 
 #[derive(Copy, Clone, Default)]
@@ -45,6 +45,12 @@ impl Vec3 {
         //somme des carré
     }
 
+    pub fn near_zero(&self) -> bool {
+        const EPS: f64 = 1.0e-8;
+        // Return true if the vector is close to zero in all dimensions
+        self.axe[0].abs() < EPS && self.axe[1].abs() < EPS && self.axe[2].abs() < EPS
+    }
+
     pub fn vec_length(&self) -> f64 {
         f64::sqrt(self.length_squared())
         //racine de la somme = longueur concrète
@@ -73,7 +79,28 @@ impl Vec3 {
         u.axe[0] * v.axe[0] + u.axe[1] * v.axe[1] + u.axe[2] * v.axe[2]
     }
 
+    pub fn reflect(v: Vec3, n: Vec3) -> Vec3 {
+        v - 2.0 * Vec3::dot(v, n) * n
+    }
+
+    pub fn cross(u: Vec3, v: Vec3) -> Vec3 {
+        Vec3::new(
+            u.axe[1] * v.axe[2] - u.axe[2] * v.axe[1],
+            u.axe[2] * v.axe[0] - u.axe[0] * v.axe[2],
+            u.axe[0] * v.axe[1] - u.axe[1] * v.axe[0],
+        )
+    }
+
+    pub fn normalize(&self) -> Vec3 {
+        let length = self.vec_length();
+        if length > 0.0 {
+            *self / length // Divide each component by the vector's length
+        } else {
+            *self // In case the vector is zero, return the original vector
+        }
+    }
 }
+
 
 pub type Point3 = Vec3;
 
@@ -105,20 +132,21 @@ impl Sub for Vec3 {
     }
 }
 
-impl Mul<Vec3> for f64 {
+impl Mul for Vec3 {
     type Output = Vec3;
-
-    fn mul(self, v: Vec3) -> Self::Output {
-        Vec3::new(self * v.x(), self * v.y(), self * v.z())
+ 
+    fn mul(self, v: Vec3) -> Vec3 {
+        Vec3::new(self.x() * v.x(), self.y() * v.y(), self.z() * v.z())
     }
 }
-
-impl Mul<f64> for Vec3 {
+ 
+// f64 * Vec3
+impl Mul<Vec3> for f64 {
     type Output = Vec3;
-    fn mul(self, multiplier: f64) -> Self::Output {
-        Self::new(self.x() * multiplier, self.y() * multiplier, self.z() * multiplier)
+ 
+    fn mul(self, v: Vec3) -> Vec3 {
+        Vec3::new(self * v.x(), self * v.y(), self * v.z())
     }
-    
 }
 
 impl Div<f64> for Vec3 {
@@ -128,11 +156,4 @@ impl Div<f64> for Vec3 {
     }
 }
 
-// pub fn cross(u: Vec3, v: Vec3) -> Vec3 {
-//     Vec3::new(
-//         u.axe[1] * v.axe[2] - u.axe[2] * v.axe[1],
-//         u.axe[2] * v.axe[0] - u.axe[0] * v.axe[2],
-//         u.axe[0] * v.axe[1] - u.axe[1] * v.axe[0],
-//     )
-// }
 
