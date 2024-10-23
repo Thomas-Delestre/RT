@@ -15,30 +15,41 @@ Ce projet a été réaliser en suivant un tutoriel complet : https://the-ray-tra
 Les constantes comme la résolution de l'image, le nombre d'échantillons par pixel, et le ratio d'aspect sont configurables dans un fichier séparé **constants.rs**.
 
 # Audit
-    Retrouvez les 4 images necessaire à l'audit dans le dossier audit_img._
-##### Using the ray tracer construct any scene you want, including at least one of all objects. (this can take a while to render, so in the meantime you can skip the first two questions and answer the following ones)
+Retrouvez les 4 images necessaire à l'audit dans le dossier audit_img._
+### Using the ray tracer construct any scene you want, including at least one of all objects. (this can take a while to render, so in the meantime you can skip the first two questions and answer the following ones)
 * Does the image correspond to the scene you created?
     _ Oui, l'image affiche correctement les objets ajouté danns le monde. Ajouté un petit cube clair en métal semi-réfléchissant en le plaçant a gauche du premier:
         ```
         let material_cube = Rc::new(Metal::new(Color::new(0.7, 0.9, 0.8), 0.5));
+
         world.add(Box::new(Cube::new(
+
             Point3::new(-0.4, 0.0, -0.4),
+
             Point3::new(-0.1, 0.3, -0.1),
+
             material_cube,
+            
         )));
         ```
 * Is it possible for you to reduce the resolution of the output image?
     _ Dans le fichier **constants.rs** en modifiant la valeur de **IMAGE_WIDTH**. Vous modifiez aussi **IMAGE_HEIGHT** grace au ratio. Ainsi la resolution est modifié
-##### Move the camera and render the same scene.
+### Move the camera and render the same scene.
 * Does the image correspond to the same scene, but from a different perspective?
     _ Pour bouger la camera, modifié ces valeurs dans le fichier **tuto_draw** :
         ```
         let cam = Camera::new(
+
         Point3::new(0.3, 1.3, 2.0),  // Position de la camera
+
         Point3::new(0.0, 0.0, 0.0),  // Position que la camera regarde
+
         Vec3::new(0.0, 1.0, 0.0),    // Modifie son inclinaison sur les 3 axes
+
         80.0,                        // Champ de vision vertical
-        ASPECT_RATIO,                
+
+        ASPECT_RATIO,
+
         );
         ```
 
