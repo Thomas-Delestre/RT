@@ -34,8 +34,9 @@ pub fn draw_img() -> Result<()> {
         let material_ground = Rc::new(Lambertian::new(Color::new(0.8, 0.8, 0.0)));
         world.add(Box::new(Sphere::new(Point3::new(0.0, -100.5, -1.0),100.0,material_ground,)));
     */
+    
     // plane ground
-    let material_ground = Rc::new(Lambertian::new(Color::new(0.9, 0.7, 0.8)));
+    let material_ground = Rc::new(Lambertian::new(Color::new(0.2, 0.2, 0.5)));
     world.add(Box::new(Plane::new(
         Point3::new(0.0, 0.0, -1.0), // Un point sur le plan (y = -0.5)
         Vec3::new(0.0, 5.0, 0.0),    // Normale vers le haut (en direction de l'axe Y)
@@ -75,10 +76,17 @@ pub fn draw_img() -> Result<()> {
         0.5,                     
         material_cylinder,
     )));
+    // Little cube
+    let material_cube = Rc::new(Metal::new(Color::new(0.8, 0.2, 0.6), 0.5));
+    world.add(Box::new(Cube::new(
+        Point3::new(-0.8, 0.0, 0.0),
+        Point3::new(-0.5, 0.3, 0.3),
+        material_cube,
+    )));
  
     // Camera
     let cam = Camera::new(
-        Point3::new(0.5, 1.0, 2.0),
+        Point3::new(0.3, 1.3, 2.0),
         Point3::new(0.0, 0.0, 0.0),
         Vec3::new(0.0, 1.0, 0.0),
         80.0,
@@ -122,12 +130,11 @@ fn ray_color(r: &Ray, world: &dyn Hittable, depth: i32) -> Color {
 
     // Couleur de l'arrière-plan (dégradé)
     let unit_direction = Vec3::unit_vector(r.direction());
-    let t = 2.0 * (unit_direction.y() + 1.0);
+    let t = 0.3 * (unit_direction.y() + 1.0);
     
-    // Dégradé du ciel assombri
-    return (1.0 - t) * Color::new(0.8, 0.8, 0.8) + t * Color::new(0.2, 0.4, 0.6);
+    // Dégradé du ciel
+    return (1.0 - t) * Color::new(0.4, 0.4, 0.4) + t * Color::new(0.2, 0.4, 0.6);
 }
-
 
 
 
@@ -178,8 +185,8 @@ lower_left_corner = Vec3(-1.7775, -1.0, -1.0)
     let r = i as f64 / (IMAGE_WIDTH - 1) as f64;
     let g = j as f64 / (IMAGE_HEIGHT - 1) as f64;
     let b = 0.25;
-    //utilisation batarde du Vec3 pour stoker des ensemble de 3 valeur rgb.
-    //ensuite lu par la fn write_color
+    // utilisation batarde du Vec3 pour stoker des ensemble de 3 valeur rgb.
+    // ensuite lu par la fn write_color
     // Using our new Color (alias Vec3), we’ll create a utility function to write a single pixel’s color out to the output stream.
     let pixel_color = Color::new(r, g, b);
 } */
