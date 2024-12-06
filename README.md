@@ -49,7 +49,7 @@ Retrouvez les 4 images necessaire à l'audit dans le dossier audit_img._
     * Vous pouvez générer autant d'image que vous le souhaitez en modifiant le nom de fichier créé lors de la génération en modifiant la var **filename** dans le fichier **tuto_draw**.
 
 * Does one of these images consist of a scene with a sphere?
-    * ./audit_img/sphere_scene.png
+    * ![sphere_scene](/home/student/Documents/Zone01/Rust/rt/ray-tracing/audit_img/sphere_scene.png)
 
 * Does one of these images consist of a scene with a flat plane and a cube with lower brightness than in the sphere image?
     * Ouvrez l'image **cube_scene_darker.png**
