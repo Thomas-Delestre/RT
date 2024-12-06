@@ -8,8 +8,6 @@ pub struct Camera {
     horizontal: Vec3,
     vertical: Vec3,
 }
-
-// plus facile de modif la position de la cam
  
 impl Camera {
     pub fn new(
