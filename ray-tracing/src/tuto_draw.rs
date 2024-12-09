@@ -20,22 +20,22 @@ use crate::vec3::{Point3, Vec3};
 pub fn draw_img() -> Result<()> {
     println!("Image dimensions: {}x{}", IMAGE_WIDTH, IMAGE_HEIGHT);
 
-    // File
+    // Param fichier
     let filename = "full_obj_pov1.ppm";
     let mut file = File::create(filename)?;
     writeln!(file, "P3\n{} {}\n255", IMAGE_WIDTH, IMAGE_HEIGHT)?;
 
-    //World
+    // Monde
     let _r = f64::cos(common::PI / 4.0);
     let mut world = HittableList::new();
 
     /*
-        Placer le monde sur une sphere géante:
+        Pour Placer le monde sur une sphere géante:
         let material_ground = Rc::new(Lambertian::new(Color::new(0.8, 0.8, 0.0)));
         world.add(Box::new(Sphere::new(Point3::new(0.0, -100.5, -1.0),100.0,material_ground,)));
     */
     
-    // plane ground
+    // surface plane
     let material_ground = Rc::new(Lambertian::new(Color::new(0.05, 0.05, 0.05)));
     world.add(Box::new(Plane::new(
         Point3::new(0.0, 0.0, -1.0), // Un point sur le plan (y = -0.5)
@@ -72,16 +72,16 @@ pub fn draw_img() -> Result<()> {
     let material_cylinder = Rc::new(Metal::new(Color::new(0.5, 0.9, 0.3), 0.2));
     world.add(Box::new(Cylinder::new(
         Point3::new(-2.0, -1.0, -1.0),
-        2.5, // Height
-        0.5, // Radius
+        2.5, // hauteur
+        0.5, // radius
         material_cylinder,
     )));
     
     // Camera
     let cam = Camera::new(
-        Point3::new(1.8, 1.7, 1.2),
-        Point3::new(0.4, 0.4, 0.0),
-        Vec3::new(0.0, 1.0, 0.0),
+        Point3::new(0.0, 1.6, 2.0), // ta position
+        Point3::new(0.0, 0.0, -0.5), // point ciblé
+        Vec3::new(0.0, 1.0, 0.0), // indice d'inclinaison - de rotation sur elle-même
         80.0,
         ASPECT_RATIO,
     );

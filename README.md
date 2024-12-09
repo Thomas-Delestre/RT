@@ -50,22 +50,25 @@ Retrouvez les 4 images necessaire à l'audit dans le dossier audit_img._
 
 * Does one of these images consist of a scene with a sphere?
     <p align="center">
-    <img src="ray-tracing/audit_img/sphere_scene.png" alt="game">
+    <img src="ray-tracing/audit_img/sphere_scene.png" alt="scene_with_spheres">
     </p>
 
 * Does one of these images consist of a scene with a flat plane and a cube with lower brightness than in the sphere image?
     <p align="center">
-    <img src="ray-tracing/audit_img/cube_dark_scene.png" alt="game">
+    <img src="ray-tracing/audit_img/cube_dark_scene.png" alt="dark_scene_with_cube">
     </p>
 
 * Does one of these images consist of a scene with one of each of all the objects (one cube, one sphere, one cylinder and one flat plane)?
-    * Ouvrez l'image **full_obj_pov1.png**
+    <p align="center">
+    <img src="ray-tracing/audit_img/full_scene_1.png" alt="full_scene_1">
+    </p>
 
 * Does one of these images consist of a scene like the previous one, but with the camera in another position (thus generating the same image from a different perspective)?
-    * Ouvrez l'image **full_obj_pov2.png**
+    <p align="center">
+    <img src="ray-tracing/audit_img/full_scene_2.png" alt="full_scene_2">
 
 * Considering all of the previous pictures, can you see shadows from the objects?
-    * Elle sont particulièrement remarquable en dessous des sphères. Même si l'ombrage général est assez imperseptible.
+    * Elle sont particulièrement remarquable en dessous des sphères. Même si l'ombrage général est assez imperseptible. Les 
 
 * Did the student provide clear documentation for the ray tracer on how to use it (create elements, change brightness and move the camera)?
     * create elements -> Se référer au premier code fourni.
