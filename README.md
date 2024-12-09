@@ -66,6 +66,7 @@ Retrouvez les 4 images necessaire à l'audit dans le dossier audit_img._
 * Does one of these images consist of a scene like the previous one, but with the camera in another position (thus generating the same image from a different perspective)?
     <p align="center">
     <img src="ray-tracing/audit_img/full_scene_2.png" alt="full_scene_2">
+    </p>
 
 * Considering all of the previous pictures, can you see shadows from the objects?
     * Elle sont particulièrement remarquable en dessous des sphères. Même si l'ombrage général est assez imperseptible. Les 
