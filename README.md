@@ -49,10 +49,14 @@ Retrouvez les 4 images necessaire à l'audit dans le dossier audit_img._
     * Vous pouvez générer autant d'image que vous le souhaitez en modifiant le nom de fichier créé lors de la génération en modifiant la var **filename** dans le fichier **tuto_draw**.
 
 * Does one of these images consist of a scene with a sphere?
-    * ![sphere_scene](/home/student/Documents/Zone01/Rust/rt/ray-tracing/audit_img/sphere_scene.png)
+    <p align="center">
+    <img src="ray-tracing/audit_img/sphere_scene.png" alt="game">
+    </p>
 
 * Does one of these images consist of a scene with a flat plane and a cube with lower brightness than in the sphere image?
-    * Ouvrez l'image **cube_scene_darker.png**
+    <p align="center">
+    <img src="ray-tracing/audit_img/cube_dark_scene.png" alt="game">
+    </p>
 
 * Does one of these images consist of a scene with one of each of all the objects (one cube, one sphere, one cylinder and one flat plane)?
     * Ouvrez l'image **full_obj_pov1.png**
@@ -67,6 +71,6 @@ Retrouvez les 4 images necessaire à l'audit dans le dossier audit_img._
     * create elements -> Se référer au premier code fourni.
     * change brightness -> Dans le fichier **tuto_draw** sur la ligne du return final, augmenter la valeur qui sera déduit de t .
     ```
-    return (1.0 - t) * Color::new(0.4, 0.4, 0.4) + t * Color::new(0.2, 0.4, 0.6);
+    return (1.0 - t) * Color::new(0.4, 0.4, 0.4) + t * Color::new(0.6, 0.8, 0.6);
     ```
     * move camera -> Se référer au explication lors de la vérification des déplacement de camera.

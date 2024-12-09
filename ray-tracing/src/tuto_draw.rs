@@ -36,7 +36,7 @@ pub fn draw_img() -> Result<()> {
     */
     
     // plane ground
-    let material_ground = Rc::new(Lambertian::new(Color::new(0.2, 0.2, 0.5)));
+    let material_ground = Rc::new(Lambertian::new(Color::new(0.05, 0.05, 0.05)));
     world.add(Box::new(Plane::new(
         Point3::new(0.0, 0.0, -1.0), // Un point sur le plan (y = -0.5)
         Vec3::new(0.0, 5.0, 0.0),    // Normale vers le haut (en direction de l'axe Y)
@@ -46,8 +46,8 @@ pub fn draw_img() -> Result<()> {
     // sphere centered
     let material_center = Rc::new(Lambertian::new(Color::new(0.1, 0.2, 0.5)));
     world.add(Box::new(Sphere::new(
-        Point3::new(0.0, 0.5, -1.0),
-        0.5,
+        Point3::new(0.0, 1.0, -2.5),
+        1.0,
         material_center,
     )));
 
@@ -61,7 +61,7 @@ pub fn draw_img() -> Result<()> {
 
     
     //cube fronted
-    let material_cube = Rc::new(Metal::new(Color::new(0.2, 0.1, 0.1), 0.2));
+    let material_cube = Rc::new(Metal::new(Color::new(0.4, 0.8, 0.6), 0.2));
     world.add(Box::new(Cube::new(
         Point3::new(0.0, 0.0, 0.0), // Coin inférieur
         Point3::new(0.7, 0.7, 0.7), // Coin supérieur
@@ -69,25 +69,18 @@ pub fn draw_img() -> Result<()> {
     )));
 
     //cylinder on left
-    let material_cylinder = Rc::new(Lambertian::new(Color::new(0.8, 0.7, 0.8)));
+    let material_cylinder = Rc::new(Metal::new(Color::new(0.5, 0.9, 0.3), 0.2));
     world.add(Box::new(Cylinder::new(
-        Point3::new(-2.0, 0.0, -1.0), // Position du centre de la base du cylindre
-        1.0,                          
-        0.5,                     
+        Point3::new(-2.0, -1.0, -1.0),
+        2.5, // Height
+        0.5, // Radius
         material_cylinder,
     )));
-    // Little cube
-    let material_cube = Rc::new(Metal::new(Color::new(0.8, 0.2, 0.6), 0.5));
-    world.add(Box::new(Cube::new(
-        Point3::new(-0.8, 0.0, 0.0),
-        Point3::new(-0.5, 0.3, 0.3),
-        material_cube,
-    )));
- 
+    
     // Camera
     let cam = Camera::new(
-        Point3::new(0.3, 1.3, 2.0),
-        Point3::new(0.0, 0.0, 0.0),
+        Point3::new(1.8, 1.7, 1.2),
+        Point3::new(0.4, 0.4, 0.0),
         Vec3::new(0.0, 1.0, 0.0),
         80.0,
         ASPECT_RATIO,
@@ -133,5 +126,5 @@ fn ray_color(r: &Ray, world: &dyn Hittable, depth: i32) -> Color {
     let t = 0.3 * (unit_direction.y() + 1.0);
     
     // Dégradé du ciel
-    return (0.5 - t) * Color::new(0.4, 0.4, 0.4) + t * Color::new(0.2, 0.4, 0.6);
+    return (2.0 - t) * Color::new(0.4, 0.4, 0.4) + t * Color::new(0.2, 0.4, 0.6);
 }

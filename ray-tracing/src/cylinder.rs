@@ -24,7 +24,10 @@ impl Cylinder {
 
 impl Hittable for Cylinder {
     fn hit(&self, r: &Ray, t_min: f64, t_max: f64, rec: &mut HitRecord) -> bool {
-        // First compute the intersection with the infinite cylinder
+        let mut hit_anything = false;
+        let mut closest_t = t_max;
+
+        // Check for intersection with the cylindrical surface
         let oc = r.origin() - self.base;
         let dir = r.direction();
 
@@ -33,31 +36,70 @@ impl Hittable for Cylinder {
         let c = oc.x() * oc.x() + oc.z() * oc.z() - self.radius * self.radius;
 
         let discriminant = half_b * half_b - a * c;
-        if discriminant < 0.0 {
-            return false;
-        }
+        if discriminant >= 0.0 {
+            let sqrt_d = discriminant.sqrt();
 
-        // Find the nearest root that lies in the acceptable range
-        let sqrt_d = discriminant.sqrt();
-        let mut root = (-half_b - sqrt_d) / a;
-        if root < t_min || root > t_max {
+            // Check the smaller root
+            let mut root = (-half_b - sqrt_d) / a;
+            let y_hit = oc.y() + root * dir.y();
+            if root > t_min && root < closest_t && y_hit >= 0.0 && y_hit <= self.height {
+                closest_t = root;
+                hit_anything = true;
+
+                rec.t = root;
+                rec.p = r.at(rec.t);
+                let outward_normal = Vec3::new(rec.p.x() - self.base.x(), 0.0, rec.p.z() - self.base.z()).normalize();
+                rec.set_face_normal(r, outward_normal);
+                rec.mat = Some(self.mat.clone());
+            }
+
+            // Check the larger root
             root = (-half_b + sqrt_d) / a;
-            if root < t_min || root > t_max {
-                return false;
+            let y_hit = oc.y() + root * dir.y();
+            if root > t_min && root < closest_t && y_hit >= 0.0 && y_hit <= self.height {
+                closest_t = root;
+                hit_anything = true;
+
+                rec.t = root;
+                rec.p = r.at(rec.t);
+                let outward_normal = Vec3::new(rec.p.x() - self.base.x(), 0.0, rec.p.z() - self.base.z()).normalize();
+                rec.set_face_normal(r, outward_normal);
+                rec.mat = Some(self.mat.clone());
             }
         }
 
-        let y_hit = oc.y() + root * dir.y(); // Check if within cylinder height
-        if y_hit < 0.0 || y_hit > self.height {
-            return false;
+        // Check for intersection with the bottom cap
+        let t_cap_bottom = (self.base.y() - r.origin().y()) / r.direction().y();
+        if t_cap_bottom > t_min && t_cap_bottom < closest_t {
+            let p_cap = r.at(t_cap_bottom);
+            let d = (p_cap.x() - self.base.x()).powi(2) + (p_cap.z() - self.base.z()).powi(2);
+            if d <= self.radius * self.radius {
+                closest_t = t_cap_bottom;
+                hit_anything = true;
+
+                rec.t = t_cap_bottom;
+                rec.p = p_cap;
+                rec.set_face_normal(r, Vec3::new(0.0, -1.0, 0.0)); // Normal points downward
+                rec.mat = Some(self.mat.clone());
+            }
         }
 
-        rec.t = root;
-        rec.p = r.at(rec.t);
-        let outward_normal = Vec3::new(rec.p.x() - self.base.x(), 0.0, rec.p.z() - self.base.z()).normalize();
-        rec.set_face_normal(r, outward_normal);
-        rec.mat = Some(self.mat.clone());
+        // Check for intersection with the top cap
+        let t_cap_top = (self.base.y() + self.height - r.origin().y()) / r.direction().y();
+        if t_cap_top > t_min && t_cap_top < closest_t {
+            let p_cap = r.at(t_cap_top);
+            let d = (p_cap.x() - self.base.x()).powi(2) + (p_cap.z() - self.base.z()).powi(2);
+            if d <= self.radius * self.radius {
+                closest_t = t_cap_top;
+                hit_anything = true;
 
-        true
+                rec.t = t_cap_top;
+                rec.p = p_cap;
+                rec.set_face_normal(r, Vec3::new(0.0, 1.0, 0.0)); // Normal points upward
+                rec.mat = Some(self.mat.clone());
+            }
+        }
+
+        hit_anything
     }
 }
